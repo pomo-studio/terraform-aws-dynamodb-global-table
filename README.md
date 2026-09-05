@@ -93,18 +93,25 @@ Operational guardrails and evidence templates:
 - For `PROVISIONED` billing mode, table read/write capacity must be provided.
 - If using KMS, ensure role permissions include KMS decrypt/encrypt grants.
 
+
+## Maintaining This Module
+
+The generated interface below is authoritative for requirements, providers, resources, inputs, and outputs. Regenerate with `terraform-docs` **v0.20.0**: `terraform-docs .`. CI fails on drift; keep explanatory prose outside the generated markers.
+
+See the [contribution guide](https://github.com/pomo-studio/.github/blob/main/CONTRIBUTING.md) and [security policy](https://github.com/pomo-studio/.github/blob/main/SECURITY.md). PR validation does not prove a live plan or deployment. Infrastructure plans and applies belong in Terraform Cloud; never provide cloud credentials to untrusted PR code.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0, < 7.0 |
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
+|------|---------|
 | <a name="provider_aws.dr"></a> [aws.dr](#provider\_aws.dr) | 6.63.0 |
 | <a name="provider_aws.primary"></a> [aws.primary](#provider\_aws.primary) | 6.63.0 |
 
@@ -115,14 +122,14 @@ No modules.
 ## Resources
 
 | Name | Type |
-| ---- | ---- |
+|------|------|
 | [aws_dynamodb_table.primary](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table) | resource |
 | [aws_dynamodb_table_replica.dr](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table_replica) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-| ---- | ----------- | ---- | ------- | :------: |
+|------|-------------|------|---------|:--------:|
 | <a name="input_attributes"></a> [attributes](#input\_attributes) | Attribute definitions used by table keys and GSIs. | <pre>list(object({<br/>    name = string<br/>    type = string<br/>  }))</pre> | n/a | yes |
 | <a name="input_billing_mode"></a> [billing\_mode](#input\_billing\_mode) | PAY\_PER\_REQUEST or PROVISIONED. | `string` | `"PAY_PER_REQUEST"` | no |
 | <a name="input_enable_deletion_protection"></a> [enable\_deletion\_protection](#input\_enable\_deletion\_protection) | Enable DynamoDB deletion protection. | `bool` | `false` | no |
@@ -147,7 +154,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-| ---- | ----------- |
+|------|-------------|
 | <a name="output_replica_enabled"></a> [replica\_enabled](#output\_replica\_enabled) | Whether DR replica is enabled. |
 | <a name="output_replica_region_table_name"></a> [replica\_region\_table\_name](#output\_replica\_region\_table\_name) | Replica table name in DR region (same as primary). Null when DR disabled. |
 | <a name="output_table_arn_primary"></a> [table\_arn\_primary](#output\_table\_arn\_primary) | Primary-region DynamoDB table ARN. |
