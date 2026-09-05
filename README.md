@@ -3,6 +3,8 @@
 [![Terraform Validation](https://github.com/pomo-studio/terraform-aws-dynamodb-global-table/actions/workflows/terraform.yml/badge.svg)](https://github.com/pomo-studio/terraform-aws-dynamodb-global-table/actions/workflows/terraform.yml)
 [![Terraform Registry](https://img.shields.io/badge/terraform-registry-844FBA?logo=terraform)](https://registry.terraform.io/modules/pomo-studio/dynamodb-global-table/aws)
 
+- [Changelog](CHANGELOG.md)
+
 Terraform module for creating DynamoDB tables with optional cross-region replica support.
 
 - Primary table in `aws.primary`
