@@ -10,6 +10,7 @@ on:
       - '.terraform-docs.yml'
       - 'CHANGELOG.md'
       - '.github/workflows/terraform.yml'
+      - '.github/workflows/interface-docs.yml'
   pull_request:
     branches: [main]
     paths:
@@ -19,7 +20,11 @@ on:
       - '.terraform-docs.yml'
       - 'CHANGELOG.md'
       - '.github/workflows/terraform.yml'
+      - '.github/workflows/interface-docs.yml'
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: terraform-validation-${{ github.ref }}
@@ -32,6 +37,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4
@@ -51,6 +58,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4
@@ -104,6 +113,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v6
@@ -115,17 +126,3 @@ jobs:
 
       - name: Run TFLint
         run: tflint -f compact --recursive
-
-  docs:
-    name: Docs Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-      - name: terraform-docs check
-        uses: terraform-docs/gh-actions@v1.4.1
-        with:
-          working-dir: .
-          output-file: README.md
-          output-method: inject
-          args: --check
