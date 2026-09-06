@@ -128,4 +128,6 @@ jobs:
           working-dir: .
           output-file: README.md
           output-method: inject
-          args: --check
+          # The action's terraform-docs build has no --check flag; passing it
+          # aborts before any comparison, so this job never verified anything.
+          fail-on-diff: true
