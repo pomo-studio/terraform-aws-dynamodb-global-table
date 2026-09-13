@@ -93,6 +93,11 @@ Operational guardrails and evidence templates:
 - For `PROVISIONED` billing mode, table read/write capacity must be provided.
 - If using KMS, ensure role permissions include KMS decrypt/encrypt grants.
 
+## Reference
+
+<details>
+<summary>Reference</summary>
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -155,3 +160,5 @@ No modules.
 | <a name="output_table_name_primary"></a> [table\_name\_primary](#output\_table\_name\_primary) | Primary-region DynamoDB table name. |
 | <a name="output_table_stream_arn_primary"></a> [table\_stream\_arn\_primary](#output\_table\_stream\_arn\_primary) | Primary-region DynamoDB stream ARN. Null when streams are disabled. |
 <!-- END_TF_DOCS -->
+
+</details>
