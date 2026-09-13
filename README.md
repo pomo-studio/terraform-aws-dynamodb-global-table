@@ -3,28 +3,19 @@
 [![Terraform Validation](https://github.com/pomo-studio/terraform-aws-dynamodb-global-table/actions/workflows/terraform.yml/badge.svg)](https://github.com/pomo-studio/terraform-aws-dynamodb-global-table/actions/workflows/terraform.yml)
 [![Terraform Registry](https://img.shields.io/badge/terraform-registry-844FBA?logo=terraform)](https://registry.terraform.io/modules/pomo-studio/dynamodb-global-table/aws)
 
-- [Changelog](CHANGELOG.md)
+[Changelog](CHANGELOG.md)
 
-Terraform module for creating DynamoDB tables with optional cross-region replica support.
+A DynamoDB table with an optional cross-region replica, defined once.
 
-- Primary table in `aws.primary`
-- Optional DR replica in `aws.dr`
-- Supports GSIs, streams, PITR, TTL, SSE/KMS, and deletion protection
-- Designed for migration-safe adoption using `moved` + `import` workflows
+## When to use it
 
-## Usage
+Use this component when an application needs a DynamoDB table, and possibly the same table live in a second region for recovery. The table is created in the primary region, and `enable_dr` adds a replica in the DR region.
+
+The module covers the pieces an application table usually needs: hash and range keys, global secondary indexes, streams, point-in-time recovery, TTL, KMS encryption, and deletion protection. Adopting an existing table is supported through `moved` and `import`, without destroying data.
+
+## Quickstart
 
 ```hcl
-provider "aws" {
-  alias  = "primary"
-  region = "us-east-1"
-}
-
-provider "aws" {
-  alias  = "dr"
-  region = "us-west-2"
-}
-
 module "transactions_table" {
   source  = "pomo-studio/dynamodb-global-table/aws"
   version = "~> 1.0"
@@ -34,7 +25,7 @@ module "transactions_table" {
     aws.dr      = aws.dr
   }
 
-  name      = "txwatch-transactions"
+  name      = "my-app-transactions"
   hash_key  = "PK"
   range_key = "SK"
 
@@ -64,34 +55,39 @@ module "transactions_table" {
   enable_dr = true
 
   tags = {
-    Project   = "txwatch"
+    Project   = "my-app"
     ManagedBy = "terraform"
   }
 }
 ```
 
-## Migration Guidance (Non-Destructive)
+## What it creates
 
-When moving existing tables into this module:
+- The primary table, in `aws.primary`, with the keys and indexes you declare.
+- An optional replica in `aws.dr` when `enable_dr` is true.
+- Streams when DR is enabled, because replication requires them.
+- Point-in-time recovery, TTL, SSE/KMS, and deletion protection, driven by their inputs.
 
-1. Add module with matching table name/schema settings.
-2. Add `moved` blocks for address changes where applicable.
-3. Use `import` blocks (or `terraform import`) for pre-existing resources:
-   - primary table -> `module.<name>.aws_dynamodb_table.primary`
-   - replica -> `module.<name>.aws_dynamodb_table_replica.dr[0]`
+## Design decisions
+
+- **Primary plus optional replica.** One module call defines the table and its replica together, so the two cannot drift apart.
+- **Streams are a prerequisite for DR.** Enabling a replica turns them on; there is no separate switch to forget.
+- **Migration-safe by default.** Existing tables are adopted with `moved` and `import` blocks, followed by a plan that must show no unexpected destroys.
+- **Capacity and encryption are your call.** `PROVISIONED` billing needs read and write capacity, and KMS encryption needs the calling role to have encrypt and decrypt grants.
+
+## Migrating an existing table
+
+1. Add the module with matching name and schema settings.
+2. Add `moved` blocks for address changes.
+3. Use `import` blocks (or `terraform import`) for existing resources, at `module.<name>.aws_dynamodb_table.primary` and `module.<name>.aws_dynamodb_table_replica.dr[0]`.
 4. Run `terraform plan` and require zero unexpected destroys.
-5. Apply in one workspace at a time (canary-first), then continue rollout.
+5. Apply in one workspace at a time, canary first.
 
-Operational guardrails and evidence templates:
+Operational guardrails and an evidence template live in [`docs/MIGRATION_GUARDRAILS.md`](docs/MIGRATION_GUARDRAILS.md) and [`docs/MIGRATION_EVIDENCE_TEMPLATE.md`](docs/MIGRATION_EVIDENCE_TEMPLATE.md).
 
-- `docs/MIGRATION_GUARDRAILS.md`
-- `docs/MIGRATION_EVIDENCE_TEMPLATE.md`
+## Examples
 
-## Notes
-
-- Enabling DR requires streams.
-- For `PROVISIONED` billing mode, table read/write capacity must be provided.
-- If using KMS, ensure role permissions include KMS decrypt/encrypt grants.
+- [Basic](examples/basic/)
 
 ## Reference
 
@@ -162,3 +158,11 @@ No modules.
 <!-- END_TF_DOCS -->
 
 </details>
+
+## Support and license
+
+Part of the [pomo-studio](https://github.com/pomo-studio) Terraform components, run in production by [postmodern.](https://pomo.studio). Regenerate the reference with `terraform-docs` v0.20.0 (`terraform-docs .`); CI fails on drift.
+
+See the [contribution guide](https://github.com/pomo-studio/.github/blob/main/CONTRIBUTING.md) and [security policy](https://github.com/pomo-studio/.github/blob/main/SECURITY.md).
+
+MIT licensed. See [LICENSE](LICENSE).
