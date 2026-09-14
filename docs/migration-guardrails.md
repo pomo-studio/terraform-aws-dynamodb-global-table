@@ -40,4 +40,4 @@ For each migration run, store:
 3. Apply run ID and status.
 4. Post-apply health verification.
 
-Use `docs/MIGRATION_EVIDENCE_TEMPLATE.md`.
+Use `docs/migration-evidence-template.md`.

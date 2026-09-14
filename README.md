@@ -83,7 +83,7 @@ module "transactions_table" {
 4. Run `terraform plan` and require zero unexpected destroys.
 5. Apply in one workspace at a time, canary first.
 
-Operational guardrails and an evidence template live in [`docs/MIGRATION_GUARDRAILS.md`](docs/MIGRATION_GUARDRAILS.md) and [`docs/MIGRATION_EVIDENCE_TEMPLATE.md`](docs/MIGRATION_EVIDENCE_TEMPLATE.md).
+Operational guardrails and an evidence template live in [`docs/migration-guardrails.md`](docs/migration-guardrails.md) and [`docs/migration-evidence-template.md`](docs/migration-evidence-template.md).
 
 ## Examples
 
